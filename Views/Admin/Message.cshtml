@@ -1,0 +1,13 @@
+@model ContactMessage
+@{ ViewData["Title"] = "Message"; }
+<h1 class="h3 mb-3">Message</h1>
+<partial name="_AdminNav" />
+<div class="card-surface p-4">
+    <p class="mb-1"><strong>From:</strong> @Model.Name &lt;@Model.Email&gt;</p>
+    <p class="mb-1"><strong>Subject:</strong> @(string.IsNullOrWhiteSpace(Model.Subject) ? "(no subject)" : Model.Subject)</p>
+    <p class="text-muted">@Model.CreatedAt.ToLocalTime().ToString("dd MMM yyyy HH:mm")</p>
+    <hr />
+    <p style="white-space:pre-wrap">@Model.Message</p>
+    <a class="btn btn-outline-secondary" asp-action="Messages">← Back to messages</a>
+    <a class="btn btn-earth" href="mailto:@Model.Email?subject=Re: @Model.Subject">Reply by email</a>
+</div>

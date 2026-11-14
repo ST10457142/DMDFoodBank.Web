@@ -1,0 +1,101 @@
+@model DonatePageViewModel
+@{ ViewData["Title"] = "Donate"; }
+@functions {
+    string Active(string tab) => Model.ActiveTab == tab ? "active" : "";
+    string Show(string tab) => Model.ActiveTab == tab ? "show active" : "";
+}
+
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card-surface p-4">
+      <h1 class="h3">Every Rand Feeds a Family</h1>
+      <p class="text-muted">Your donation goes straight to families who need it.</p>
+
+      @if (Model.IsLoggedIn)
+      {
+        <div class="alert alert-light border">
+            <strong>Your total: @Money.Format(Model.UserTotal)</strong><br />
+            @Model.UserCount donation@(Model.UserCount != 1 ? "s" : "") made
+        </div>
+      }
+      else
+      {
+        <div class="alert alert-light border">
+            <a asp-controller="Account" asp-action="Login">Sign in</a> to track your donation history and receive a Section 18A tax receipt.
+        </div>
+      }
+
+      <ul class="nav nav-tabs mb-3" role="tablist">
+        <li class="nav-item"><button class="nav-link @Active("money")" data-bs-toggle="tab" data-bs-target="#tab-money" type="button" role="tab">💰 Donate Money</button></li>
+        <li class="nav-item"><button class="nav-link @Active("food")" data-bs-toggle="tab" data-bs-target="#tab-food" type="button" role="tab">🥕 Donate Food</button></li>
+      </ul>
+
+      <div class="tab-content">
+        <div class="tab-pane fade @Show("money")" id="tab-money" role="tabpanel">
+          <form asp-action="GiveMoney" method="post" novalidate>
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2"></div>
+            <label class="form-label fw-semibold">Choose an amount</label>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+              @foreach (var (amount, meals) in Options.Presets)
+              {
+                var val = amount.ToString("0");
+                <input type="radio" class="btn-check amount-radio" name="Money.PresetAmount" id="amt-@val" value="@val" checked="@(Model.Money.PresetAmount == val)" />
+                <label class="btn btn-outline-earth text-center" for="amt-@val">R @val<br /><small>@meals</small></label>
+              }
+              <input type="radio" class="btn-check amount-radio" name="Money.PresetAmount" id="amt-custom" value="custom" checked="@(Model.Money.PresetAmount == "custom")" />
+              <label class="btn btn-outline-earth d-flex align-items-center" for="amt-custom">Custom</label>
+            </div>
+
+            <div class="mb-3" id="customBox" style="display:@(Model.Money.PresetAmount == "custom" ? "block" : "none")">
+              <label asp-for="Money.CustomAmount" class="form-label"></label>
+              <input asp-for="Money.CustomAmount" class="form-control" type="number" min="10" step="1" />
+              <span asp-validation-for="Money.CustomAmount" class="text-danger small"></span>
+              <div class="form-text">Minimum donation is R 10.00.</div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Donation frequency</label>
+              <select name="Money.Frequency" class="form-select">
+                <option value="once" selected="@(Model.Money.Frequency == "once")">One-time donation</option>
+                <option value="monthly" selected="@(Model.Money.Frequency == "monthly")">Monthly recurring</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-warm btn-lg w-100">🔒 Donate Securely</button>
+          </form>
+        </div>
+
+        <div class="tab-pane fade @Show("food")" id="tab-food" role="tabpanel">
+          <form asp-action="GiveFood" method="post" novalidate>
+            <div class="mb-3">
+              <label asp-for="Food.Description" class="form-label"></label>
+              <textarea asp-for="Food.Description" class="form-control" rows="3" placeholder="e.g. 20 cans of baked beans, 5kg rice"></textarea>
+              <span asp-validation-for="Food.Description" class="text-danger small"></span>
+            </div>
+            <div class="mb-3">
+              <label asp-for="Food.Hub" class="form-label"></label>
+              <select asp-for="Food.Hub" asp-items="@(new SelectList(HubData.All.Select(h => h.Name)))" class="form-select"></select>
+              <span asp-validation-for="Food.Hub" class="text-danger small"></span>
+            </div>
+            <p class="text-muted small">We accept canned goods, dry goods and fresh produce.</p>
+            <button type="submit" class="btn btn-earth btn-lg w-100">Register Food Donation</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-center gap-3 mt-4 text-muted small">
+        <span>🔒 SSL</span><span>🧾 S18A</span><span>✅ NPO</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+@section Scripts {
+<script>
+  document.querySelectorAll('.amount-radio').forEach(function (r) {
+    r.addEventListener('change', function () {
+      document.getElementById('customBox').style.display =
+        document.getElementById('amt-custom').checked ? 'block' : 'none';
+    });
+  });
+</script>
+}

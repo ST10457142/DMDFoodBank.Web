@@ -1,0 +1,41 @@
+@model AdminDashboardViewModel
+@{ ViewData["Title"] = "Admin Dashboard"; }
+<h1 class="h3 mb-3">Admin Panel</h1>
+<partial name="_AdminNav" />
+
+<div class="row g-3 mb-4 text-center">
+    <div class="col-6 col-md-3"><div class="stat-tile"><div class="stat-num">@Money.Format(Model.TotalRaised)</div>Total raised</div></div>
+    <div class="col-6 col-md-3"><div class="stat-tile"><div class="stat-num">@Money.Format(Model.MonthRaised)</div>This month</div></div>
+    <div class="col-6 col-md-3"><div class="stat-tile"><div class="stat-num">@Model.TotalDonations</div>Total donations</div></div>
+    <div class="col-6 col-md-3"><div class="stat-tile"><div class="stat-num">@((int)(ViewBag.Unread ?? 0))</div>Unread msgs</div></div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-5">
+        <div class="card-surface p-4 h-100">
+            <h2 class="h5">Top Donors</h2>
+            @if (!Model.TopDonors.Any()) { <p class="text-muted mb-0">No donors yet.</p> }
+            <ol class="list-group list-group-numbered">
+            @foreach (var u in Model.TopDonors)
+            {
+                <li class="list-group-item d-flex justify-content-between"><span>@u.FullName <small class="text-muted">(@u.DonationCount)</small></span><strong>@u.FormattedTotal</strong></li>
+            }
+            </ol>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card-surface p-4 h-100">
+            <h2 class="h5">Recent Donations</h2>
+            @if (!Model.RecentDonations.Any()) { <p class="text-muted mb-0">No donations yet.</p> }
+            <div class="list-group">
+            @foreach (var d in Model.RecentDonations)
+            {
+                <div class="list-group-item d-flex justify-content-between">
+                    <span>@(d.User?.FullName ?? "Anonymous") <small class="text-muted">@d.FormattedDate</small></span>
+                    <strong>@d.FormattedAmount</strong>
+                </div>
+            }
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,20 @@
+@model IEnumerable<Donation>
+@if (!Model.Any())
+{
+    <p class="text-muted mb-0">No donations yet.</p>
+}
+else
+{
+    <div class="list-group">
+    @foreach (var d in Model)
+    {
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                <div class="fw-semibold">@(d.DonationType == "money" ? "💰 Monetary Donation" : "🥕 Food Donation")</div>
+                <small class="text-muted">@d.FormattedDate · @(char.ToUpper(d.Frequency[0]) + d.Frequency[1..])</small>
+            </div>
+            <span class="fw-bold text-earth">@d.FormattedAmount</span>
+        </div>
+    }
+    </div>
+}

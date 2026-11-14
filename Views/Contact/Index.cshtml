@@ -1,0 +1,27 @@
+@model ContactViewModel
+@{ ViewData["Title"] = "Contact"; }
+
+<div class="row g-4">
+  <div class="col-md-5">
+    <div class="card-surface p-4 h-100">
+      <h1 class="h3">Get in touch</h1>
+      <p class="text-muted">We'd love to hear from you.</p>
+      <p class="mb-2"><strong>Address</strong><br />123 Ubuntu Street, Soweto, Johannesburg, 1804</p>
+      <p class="mb-2"><strong>Phone</strong><br /><a href="tel:0111234567">011 123 4567</a></p>
+      <p class="mb-2"><strong>Email</strong><br /><a href="mailto:info@dmdfoodbank.org">info@dmdfoodbank.org</a></p>
+      <p class="mb-0"><strong>Office Hours</strong><br />Mon–Fri 08:00–17:00<br />Sat 09:00–13:00</p>
+    </div>
+  </div>
+  <div class="col-md-7">
+    <div class="card-surface p-4">
+      <h2 class="h4">Send us a message</h2>
+      <form asp-action="Index" method="post" novalidate>
+        <div class="mb-3"><label asp-for="Name" class="form-label"></label><input asp-for="Name" class="form-control" /><span asp-validation-for="Name" class="text-danger small"></span></div>
+        <div class="mb-3"><label asp-for="Email" class="form-label"></label><input asp-for="Email" class="form-control" /><span asp-validation-for="Email" class="text-danger small"></span></div>
+        <div class="mb-3"><label asp-for="Subject" class="form-label"></label><input asp-for="Subject" class="form-control" /><span asp-validation-for="Subject" class="text-danger small"></span></div>
+        <div class="mb-3"><label asp-for="Message" class="form-label"></label><textarea asp-for="Message" class="form-control" rows="5"></textarea><span asp-validation-for="Message" class="text-danger small"></span></div>
+        <button type="submit" class="btn btn-earth">Send Message</button>
+      </form>
+    </div>
+  </div>
+</div>

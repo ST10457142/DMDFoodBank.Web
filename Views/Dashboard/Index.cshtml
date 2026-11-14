@@ -1,0 +1,55 @@
+@model DashboardViewModel
+@{ ViewData["Title"] = "Dashboard"; }
+
+<div class="d-flex align-items-center gap-3 mb-4">
+    <div class="avatar">@Model.User.Initials</div>
+    <div>
+        <h1 class="h3 mb-0">Welcome back, @Model.User.FullName 👋</h1>
+        <span class="text-muted">@DateTime.Now.ToString("dddd, dd MMMM yyyy")</span>
+    </div>
+</div>
+
+<div class="row g-3 mb-4 text-center">
+    <div class="col-md-4"><div class="stat-tile"><div class="stat-num">@Model.User.FormattedTotal</div>Total donated</div></div>
+    <div class="col-md-4"><div class="stat-tile"><div class="stat-num">@Model.User.DonationCount</div>Donations made</div></div>
+    <div class="col-md-4"><div class="stat-tile"><div class="stat-num">@Model.User.MealsFunded</div>Est. meals funded</div></div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="card-surface p-4 h-100">
+            <h2 class="h6">Monthly Campaign Goal</h2>
+            <p class="mb-2">@Money.Format(Model.MonthTotal) / R 50,000</p>
+            <div class="progress" role="progressbar" aria-label="Monthly goal" aria-valuenow="@Model.MonthPercent" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar bg-earth" style="width:@Model.MonthPercent%"></div>
+            </div>
+            <small class="text-muted">@Model.MonthPercent% reached</small>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card-surface p-4 h-100">
+            <h2 class="h6">Next milestone</h2>
+            @if (Model.NextMilestone is { } next)
+            {
+                <p class="mb-2">@next.Icon @next.Label — <strong>@Money.Format(next.Threshold - Model.User.TotalDonated) to go!</strong></p>
+            }
+            else
+            {
+                <p class="mb-2">🏆 Champion Donor! All milestones reached!</p>
+            }
+            <div class="progress" role="progressbar" aria-label="Milestone progress" aria-valuenow="@Model.MilestonePercent" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar bg-warm" style="width:@Model.MilestonePercent%"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card-surface p-4 mb-4">
+    <h2 class="h5">Recent Donations</h2>
+    <partial name="_DonationRows" model="Model.Recent" />
+</div>
+
+<div class="d-flex flex-wrap gap-2">
+    <a class="btn btn-warm" asp-controller="Donate" asp-action="Index">Make a Donation</a>
+    <a class="btn btn-earth" asp-controller="Profile" asp-action="Index">View Full Profile</a>
+</div>

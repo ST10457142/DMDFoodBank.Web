@@ -1,0 +1,59 @@
+@model RegisterPageViewModel
+@{ ViewData["Title"] = "Join Us"; }
+
+@functions {
+    string Active(string tab) => Model.ActiveTab == tab ? "active" : "";
+    string Show(string tab) => Model.ActiveTab == tab ? "show active" : "";
+}
+
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card-surface p-4">
+      <h1 class="h3">Join Our Community</h1>
+      <p class="text-muted">Choose how you want to be part of DMD Food Bank.</p>
+
+      <ul class="nav nav-tabs mb-3" role="tablist">
+        <li class="nav-item"><button class="nav-link @Active("donor")" data-bs-toggle="tab" data-bs-target="#tab-donor" type="button" role="tab">❤️ Donor</button></li>
+        <li class="nav-item"><button class="nav-link @Active("volunteer")" data-bs-toggle="tab" data-bs-target="#tab-volunteer" type="button" role="tab">🙋 Volunteer</button></li>
+        <li class="nav-item"><button class="nav-link @Active("beneficiary")" data-bs-toggle="tab" data-bs-target="#tab-beneficiary" type="button" role="tab">🤲 Beneficiary</button></li>
+      </ul>
+
+      <div class="tab-content">
+        <div class="tab-pane fade @Show("donor")" id="tab-donor" role="tabpanel">
+          <form asp-action="RegisterDonor" method="post" novalidate>
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2"></div>
+            <div class="mb-3"><label asp-for="Donor.FullName" class="form-label"></label><input asp-for="Donor.FullName" class="form-control" /><span asp-validation-for="Donor.FullName" class="text-danger small"></span></div>
+            <div class="mb-3"><label asp-for="Donor.Email" class="form-label"></label><input asp-for="Donor.Email" class="form-control" autocomplete="username" /><span asp-validation-for="Donor.Email" class="text-danger small"></span></div>
+            <div class="mb-3"><label asp-for="Donor.DonorType" class="form-label"></label><select asp-for="Donor.DonorType" asp-items="@(new SelectList(Options.DonorTypes))" class="form-select"></select></div>
+            <div class="mb-3"><label asp-for="Donor.Password" class="form-label"></label><input asp-for="Donor.Password" class="form-control" autocomplete="new-password" /><span asp-validation-for="Donor.Password" class="text-danger small"></span><div class="form-text">At least 8 characters, with an uppercase letter and a number.</div></div>
+            <div class="mb-3"><label asp-for="Donor.ConfirmPassword" class="form-label"></label><input asp-for="Donor.ConfirmPassword" class="form-control" autocomplete="new-password" /><span asp-validation-for="Donor.ConfirmPassword" class="text-danger small"></span></div>
+            <button type="submit" class="btn btn-earth w-100">Create Account</button>
+          </form>
+        </div>
+
+        <div class="tab-pane fade @Show("volunteer")" id="tab-volunteer" role="tabpanel">
+          <form asp-action="RegisterVolunteer" method="post" novalidate>
+            <div class="mb-3"><label asp-for="Volunteer.FullName" class="form-label"></label><input asp-for="Volunteer.FullName" class="form-control" /><span asp-validation-for="Volunteer.FullName" class="text-danger small"></span></div>
+            <div class="mb-3"><label asp-for="Volunteer.Email" class="form-label"></label><input asp-for="Volunteer.Email" class="form-control" /><span asp-validation-for="Volunteer.Email" class="text-danger small"></span></div>
+            <div class="mb-3"><label asp-for="Volunteer.Skills" class="form-label"></label><select asp-for="Volunteer.Skills" asp-items="@(new SelectList(Options.Skills))" class="form-select"></select></div>
+            <div class="mb-3"><label asp-for="Volunteer.Availability" class="form-label"></label><select asp-for="Volunteer.Availability" asp-items="@(new SelectList(Options.Availability))" class="form-select"></select></div>
+            <button type="submit" class="btn btn-earth w-100">Register as Volunteer</button>
+          </form>
+        </div>
+
+        <div class="tab-pane fade @Show("beneficiary")" id="tab-beneficiary" role="tabpanel">
+          <form asp-action="RegisterBeneficiary" method="post" novalidate>
+            <div class="mb-3"><label asp-for="Beneficiary.FullName" class="form-label"></label><input asp-for="Beneficiary.FullName" class="form-control" /><span asp-validation-for="Beneficiary.FullName" class="text-danger small"></span></div>
+            <div class="mb-3"><label asp-for="Beneficiary.Phone" class="form-label"></label><input asp-for="Beneficiary.Phone" class="form-control" type="tel" /><span asp-validation-for="Beneficiary.Phone" class="text-danger small"></span></div>
+            <div class="mb-3"><label asp-for="Beneficiary.HouseholdSize" class="form-label"></label><select asp-for="Beneficiary.HouseholdSize" asp-items="@(new SelectList(Options.Households))" class="form-select"></select></div>
+            <div class="mb-3"><label asp-for="Beneficiary.NearestHub" class="form-label"></label><select asp-for="Beneficiary.NearestHub" asp-items="@(new SelectList(Options.BeneficiaryHubs))" class="form-select"></select></div>
+            <button type="submit" class="btn btn-earth w-100">Apply for Assistance</button>
+          </form>
+        </div>
+      </div>
+
+      <hr />
+      <p class="mb-0">Already have an account? <a asp-action="Login">Sign in</a></p>
+    </div>
+  </div>
+</div>

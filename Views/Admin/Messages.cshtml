@@ -1,0 +1,27 @@
+@model List<ContactMessage>
+@{ ViewData["Title"] = "Messages"; }
+<h1 class="h3 mb-3">Messages</h1>
+<partial name="_AdminNav" />
+<div class="card-surface p-0 table-responsive">
+<table class="table align-middle mb-0">
+    <thead><tr><th>Date</th><th>From</th><th>Subject</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var m in Model)
+    {
+        <tr class="@(m.IsRead ? "" : "fw-bold")">
+            <td>@m.CreatedAt.ToLocalTime().ToString("dd MMM yyyy HH:mm")</td>
+            <td>@m.Name <small class="text-muted">&lt;@m.Email&gt;</small></td>
+            <td>@(string.IsNullOrWhiteSpace(m.Subject) ? "(no subject)" : m.Subject)</td>
+            <td class="text-end">
+                <a class="btn btn-sm btn-outline-secondary" asp-action="Message" asp-route-id="@m.Id">View</a>
+                <form asp-action="DeleteMessage" asp-route-id="@m.Id" method="post" class="d-inline"
+                      onsubmit="return confirm('Delete this message?');">
+                    <button class="btn btn-sm btn-outline-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+    }
+    @if (!Model.Any()) { <tr><td colspan="4" class="text-center text-muted py-4">No messages yet.</td></tr> }
+    </tbody>
+</table>
+</div>

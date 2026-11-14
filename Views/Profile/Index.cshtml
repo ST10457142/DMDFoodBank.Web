@@ -1,0 +1,87 @@
+@model ProfilePageViewModel
+@{ ViewData["Title"] = "Profile"; }
+@functions { string Active(string tab) => Model.Tab == tab ? "active" : ""; }
+
+<div class="card-surface p-4 mb-3">
+    <div class="d-flex align-items-center gap-3 flex-wrap">
+        <div class="avatar avatar-lg">@Model.User.Initials</div>
+        <div class="flex-grow-1">
+            <h1 class="h4 mb-0">@Model.User.FullName</h1>
+            <div class="text-muted">@Model.User.Email</div>
+            <span class="badge bg-earth">@Model.User.DonorType</span>
+        </div>
+        <div class="d-flex gap-4 text-center">
+            <div><div class="fw-bold">@Model.User.FormattedTotal</div><small class="text-muted">donated</small></div>
+            <div><div class="fw-bold">@Model.User.DonationCount</div><small class="text-muted">donation@(Model.User.DonationCount != 1 ? "s" : "")</small></div>
+            <div><div class="fw-bold">@Model.User.MealsFunded+</div><small class="text-muted">meals funded</small></div>
+        </div>
+    </div>
+</div>
+
+<ul class="nav nav-tabs mb-3">
+    <li class="nav-item"><a class="nav-link @Active("overview")" asp-action="Index" asp-route-tab="overview">📊 Overview</a></li>
+    <li class="nav-item"><a class="nav-link @Active("history")" asp-action="Index" asp-route-tab="history">📋 History</a></li>
+    <li class="nav-item"><a class="nav-link @Active("milestones")" asp-action="Index" asp-route-tab="milestones">🏆 Milestones</a></li>
+    <li class="nav-item"><a class="nav-link @Active("settings")" asp-action="Index" asp-route-tab="settings">⚙️ Settings</a></li>
+    <li class="nav-item"><a class="nav-link @Active("security")" asp-action="Index" asp-route-tab="security">🔐 Security</a></li>
+</ul>
+
+<div class="card-surface p-4">
+@switch (Model.Tab)
+{
+    case "history":
+        <h2 class="h5">Donation History</h2>
+        @if (!Model.Donations.Any()) { <p class="text-muted mb-0">No donation history yet.</p> }
+        else { <partial name="_DonationRows" model="Model.Donations" /> }
+        break;
+
+    case "milestones":
+        <h2 class="h5">Giving Milestones</h2>
+        <div class="row g-3">
+        @foreach (var s in Model.Milestones)
+        {
+            <div class="col-md-6">
+                <div class="border rounded p-3 d-flex gap-3 @(s.Reached ? "" : "opacity-50")">
+                    <div class="fs-2">@s.Milestone.Icon</div>
+                    <div>
+                        <div class="fw-semibold">@s.Milestone.Label @(s.Reached ? "✅" : "🔒")</div>
+                        <small class="text-muted">@s.Milestone.Description</small>
+                    </div>
+                </div>
+            </div>
+        }
+        </div>
+        break;
+
+    case "settings":
+        <h2 class="h5">Settings</h2>
+        <form asp-action="Settings" method="post" novalidate>
+            <div class="mb-3"><label asp-for="Settings.FullName" class="form-label"></label><input asp-for="Settings.FullName" class="form-control" /><span asp-validation-for="Settings.FullName" class="text-danger small"></span></div>
+            <div class="mb-3"><label asp-for="Settings.Phone" class="form-label"></label><input asp-for="Settings.Phone" class="form-control" type="tel" /><span asp-validation-for="Settings.Phone" class="text-danger small"></span></div>
+            <div class="mb-3"><label asp-for="Settings.DonorType" class="form-label"></label><select asp-for="Settings.DonorType" asp-items="@(new SelectList(Options.DonorTypes))" class="form-select"></select></div>
+            <button type="submit" class="btn btn-earth">Save Changes</button>
+        </form>
+        break;
+
+    case "security":
+        <h2 class="h5">Security</h2>
+        <form asp-action="Password" method="post" novalidate>
+            <div class="mb-3"><label asp-for="Password.CurrentPassword" class="form-label"></label><input asp-for="Password.CurrentPassword" class="form-control" autocomplete="current-password" /><span asp-validation-for="Password.CurrentPassword" class="text-danger small"></span></div>
+            <div class="mb-3"><label asp-for="Password.NewPassword" class="form-label"></label><input asp-for="Password.NewPassword" class="form-control" autocomplete="new-password" /><span asp-validation-for="Password.NewPassword" class="text-danger small"></span></div>
+            <div class="mb-3"><label asp-for="Password.ConfirmPassword" class="form-label"></label><input asp-for="Password.ConfirmPassword" class="form-control" autocomplete="new-password" /><span asp-validation-for="Password.ConfirmPassword" class="text-danger small"></span></div>
+            <button type="submit" class="btn btn-earth">Change Password</button>
+        </form>
+        <hr />
+        <form asp-controller="Account" asp-action="Logout" method="post">
+            <button type="submit" class="btn btn-outline-danger">Sign Out</button>
+        </form>
+        break;
+
+    default:
+        <h2 class="h5">Recent Donations</h2>
+        @if (!Model.Donations.Any()) { <p class="text-muted">No donations yet.</p> }
+        else { <partial name="_DonationRows" model="Model.Donations.Take(3)" /> }
+        <a class="btn btn-warm mt-3" asp-controller="Donate" asp-action="Index">Make a Donation</a>
+        break;
+}
+</div>

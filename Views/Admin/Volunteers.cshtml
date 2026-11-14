@@ -1,0 +1,26 @@
+@model List<Volunteer>
+@{ ViewData["Title"] = "Volunteers"; }
+<h1 class="h3 mb-3">Volunteers</h1>
+<partial name="_AdminNav" />
+<div class="card-surface p-0 table-responsive">
+<table class="table align-middle mb-0">
+    <thead><tr><th>Name</th><th>Email</th><th>Skills</th><th>Availability</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var v in Model)
+    {
+        <tr>
+            <td>@v.FullName</td><td>@v.Email</td><td>@v.Skills</td><td>@v.Availability</td>
+            <td><span class="badge @(v.Status == "approved" ? "bg-success" : v.Status == "rejected" ? "bg-secondary" : "bg-warning text-dark")">@v.Status</span></td>
+            <td class="text-end">
+                @if (v.Status == "pending")
+                {
+                    <form asp-action="VolunteerStatus" asp-route-id="@v.Id" method="post" class="d-inline"><input type="hidden" name="status" value="approved" /><button class="btn btn-sm btn-success">Approve</button></form>
+                    <form asp-action="VolunteerStatus" asp-route-id="@v.Id" method="post" class="d-inline"><input type="hidden" name="status" value="rejected" /><button class="btn btn-sm btn-outline-danger">Reject</button></form>
+                }
+            </td>
+        </tr>
+    }
+    @if (!Model.Any()) { <tr><td colspan="6" class="text-center text-muted py-4">No applications yet.</td></tr> }
+    </tbody>
+</table>
+</div>

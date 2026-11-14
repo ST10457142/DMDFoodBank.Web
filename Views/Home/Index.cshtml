@@ -1,0 +1,67 @@
+@model HomeViewModel
+@{ ViewData["Title"] = "Home"; }
+
+<section class="hero text-white">
+    <span class="badge rounded-pill bg-light text-dark mb-3">🌿 Non-Profit · South Africa</span>
+    @if (Model.User is not null)
+    {
+        <p class="lead mb-2">Welcome back, @Model.User.FullName!</p>
+    }
+    <h1>No one should go to bed hungry.</h1>
+    <p class="lead">DMD Food Bank collects and distributes food donations to vulnerable families across South Africa.</p>
+    <div class="d-flex flex-wrap gap-2 mt-3">
+        <a class="btn btn-warm btn-lg" asp-controller="Donate" asp-action="Index">Donate Now</a>
+        <a class="btn btn-outline-light btn-lg" asp-controller="Home" asp-action="About">Learn More</a>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <a class="btn btn-outline-light btn-lg" asp-controller="Dashboard" asp-action="Index">My Dashboard</a>
+        }
+        else
+        {
+            <a class="btn btn-outline-light btn-lg" asp-controller="Account" asp-action="Register">Join Us</a>
+        }
+    </div>
+</section>
+
+<section class="row g-3 my-4 text-center">
+    <div class="col-4"><div class="stat-tile"><div class="stat-num">48K+</div>Meals served</div></div>
+    <div class="col-4"><div class="stat-tile"><div class="stat-num">320</div>Volunteers</div></div>
+    <div class="col-4"><div class="stat-tile"><div class="stat-num">7</div>Hubs</div></div>
+</section>
+
+<section class="card-surface p-4 mb-4">
+    <div class="d-flex justify-content-between flex-wrap">
+        <h2 class="h5 mb-2">Monthly target progress</h2>
+        <span class="text-muted">@Money.Format(Model.MonthTotal) raised this month</span>
+    </div>
+    <div class="progress" role="progressbar" aria-label="Monthly target" aria-valuenow="@Model.MonthPercent" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-bar bg-earth" style="width:@Model.MonthPercent%"></div>
+    </div>
+    <small class="text-muted">@Model.MonthPercent% of target reached</small>
+</section>
+
+<h2 class="h4 mb-1">How you can help</h2>
+<p class="text-muted">Choose how you want to make a difference.</p>
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card-surface p-4 h-100">
+            <h3 class="h5">💰 Donate Money</h3>
+            <p>Make a monetary donation to help us purchase and distribute food to vulnerable families. Every rand makes a difference.</p>
+            <a class="btn btn-earth" asp-controller="Donate" asp-action="Index">Donate Now</a>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-surface p-4 h-100">
+            <h3 class="h5">🥕 Donate Food</h3>
+            <p>Have excess food? Donate it to our distribution hubs. We accept canned goods, dry goods, and fresh produce.</p>
+            <a class="btn btn-earth" asp-controller="Donate" asp-action="Index" asp-route-tab="food">Donate Food</a>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-surface p-4 h-100">
+            <h3 class="h5">🙋 Volunteer</h3>
+            <p>Give your time and skills to help sort, pack, and distribute food. We need passionate people like you.</p>
+            <a class="btn btn-earth" asp-controller="Account" asp-action="Register" asp-route-tab="volunteer">Get Involved</a>
+        </div>
+    </div>
+</div>

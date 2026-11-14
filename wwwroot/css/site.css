@@ -1,0 +1,46 @@
+:root {
+  --earth-dark: #1a3a2f;
+  --earth: #2d6a4f;
+  --earth-light: #52b788;
+  --warm: #f4a261;
+  --warm-dark: #e76f51;
+  --cream: #faf7f0;
+  --border: #d6cfc0;
+}
+body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--cream); color: #1a1a1a; min-height: 100vh; display: flex; flex-direction: column; }
+main { flex: 1; }
+h1, h2, .navbar-brand, .stat-num { font-family: 'Fraunces', Georgia, serif; }
+
+.site-nav { background: var(--earth-dark); }
+.site-nav .nav-link.active, .site-nav .nav-link:hover { color: #fff; }
+.site-footer { background: var(--earth-dark); color: #cfe3d8; padding: 1rem 0; font-size: .9rem; }
+
+.btn-earth { background: var(--earth); border-color: var(--earth); color: #fff; }
+.btn-earth:hover { background: var(--earth-dark); border-color: var(--earth-dark); color: #fff; }
+.btn-warm { background: var(--warm); border-color: var(--warm); color: var(--earth-dark); font-weight: 600; }
+.btn-warm:hover { background: var(--warm-dark); border-color: var(--warm-dark); color: #fff; }
+.btn-outline-earth { color: var(--earth); border-color: var(--earth); }
+.btn-check:checked + .btn-outline-earth, .btn-outline-earth:hover { background: var(--earth); color: #fff; border-color: var(--earth); }
+.bg-earth { background-color: var(--earth) !important; }
+.bg-warm { background-color: var(--warm) !important; }
+.text-earth { color: var(--earth); }
+a { color: var(--earth); }
+
+.hero { background: linear-gradient(135deg, var(--earth-dark), var(--earth)); border-radius: 18px; padding: 3rem 2rem; }
+.hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); }
+
+.card-surface { background: #fff; border: 1px solid var(--border); border-radius: 14px; }
+.stat-tile { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 1rem .5rem; }
+.stat-num { font-size: 1.6rem; font-weight: 700; color: var(--earth); }
+
+.avatar { width: 52px; height: 52px; border-radius: 50%; background: var(--earth); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+.avatar-lg { width: 72px; height: 72px; font-size: 1.4rem; }
+
+.status-pill { padding: .15rem .6rem; border-radius: 999px; font-size: .8rem; font-weight: 600; white-space: nowrap; }
+.status-full { background: #dcf3e1; color: #14532d; }
+.status-low { background: #fdf0c4; color: #7a5200; }
+.status-critical { background: #fbd9d9; color: #8e1b1b; }
+
+.map-box { height: 420px; border-radius: 14px; border: 1px solid var(--border); overflow: hidden; }
+.admin-nav .nav-link { color: var(--earth-dark); }
+.admin-nav .nav-link.active { background: var(--earth); color: #fff; }

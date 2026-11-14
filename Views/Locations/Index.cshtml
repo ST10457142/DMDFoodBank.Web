@@ -1,0 +1,58 @@
+@model LocationsViewModel
+@{ ViewData["Title"] = "Locations"; }
+
+<h1 class="h3">Our Distribution Hubs</h1>
+<p class="text-muted">Find your nearest hub and see where help is needed most.</p>
+
+<div class="row g-3 mb-4">
+@foreach (var h in Model.Hubs)
+{
+    <div class="col-md-6">
+        <div class="card-surface p-4 h-100">
+            <div class="d-flex justify-content-between align-items-start gap-2">
+                <h2 class="h5">@h.Name</h2>
+                <span class="status-pill @h.StatusCss">@h.StatusLabel</span>
+            </div>
+            <div>📍 @h.Address</div>
+            <div>🕐 @h.Hours</div>
+            <div>📞 <a href="tel:@(h.Phone.Replace(" ", ""))">@h.Phone</a></div>
+            <a class="btn btn-sm btn-earth mt-3" asp-controller="Donate" asp-action="Index" asp-route-tab="food">Donate Here</a>
+        </div>
+    </div>
+}
+</div>
+
+<h2 class="h4">Find us on the map</h2>
+<div id="map" class="map-box mb-4" role="img" aria-label="Map of DMD Food Bank distribution hubs"></div>
+
+@section Scripts {
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.css" rel="stylesheet" />
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js"></script>
+<script>
+  mapboxgl.accessToken = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MapboxToken));
+  var hubs = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+      Model.Hubs.Select(h => new { name = h.Name, address = h.Address, status = h.StatusLabel, color = h.StatusColor, lat = h.Latitude, lng = h.Longitude })));
+
+  var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v12',
+    center: [28.0, -26.2],
+    zoom: 8.5
+  });
+  map.addControl(new mapboxgl.NavigationControl());
+
+  hubs.forEach(function (h) {
+    // Build the popup with text nodes, so hub names can never inject HTML
+    var box = document.createElement('div');
+    var title = document.createElement('strong'); title.textContent = h.name;
+    var addr = document.createElement('div'); addr.textContent = h.address;
+    var stat = document.createElement('em'); stat.textContent = h.status;
+    box.append(title, addr, stat);
+
+    new mapboxgl.Marker({ color: h.color })
+      .setLngLat([h.lng, h.lat])
+      .setPopup(new mapboxgl.Popup({ offset: 20 }).setDOMContent(box))
+      .addTo(map);
+  });
+</script>
+}
